@@ -2,9 +2,10 @@
 #include "private.h"
 
 #define BUFSIZE 8192
+
 const char* program;
 
-int do_copy(const char* from, const char* to, struct stat source_st)
+static int do_copy(const char* from, const char* to, struct stat source_st)
 {
     int mode;
     int fold;

@@ -4,12 +4,11 @@ exename = unixbox
 libfile = lib$(libname).a
 
 # sources for tinyjs
-sources_exe = src/main.c
-headerfiles  = $(wildcard src/*.h)
-sources_lib = \
-	$(wildcard src/programs/*.c) \
-	src/common.c \
-	src/gopt.c
+sources_exe =  src/main.c
+headerfiles =  $(wildcard src/*.h)
+sources_lib =  $(wildcard src/programs/*.c)
+sources_lib += src/common.c
+sources_lib += src/gopt.c
 
 # names for intermediate files
 objects_lib     = $(sources_lib:.c=.o)
@@ -26,7 +25,7 @@ INCFLAGS = -Isrc
 
 # remove underscore for heavy-duty checks.
 # WARNING: VERBOSE
-WFLAGS = \
+_WFLAGS = \
 	-pedantic -Wall -Wextra \
 	-Wcast-align \
 	-Wcast-qual \
@@ -45,8 +44,10 @@ WFLAGS = \
 	-Wundef \
 	-Wno-unused
 
-CFLAGS = $(INCFLAGS) $(WFLAGS) -c -g3 -ggdb -rdynamic -D_DEBUG
-LDFLAGS = -g -rdynamic -L. -Wl,-rpath=.
+WFLAGS = -Wall -Wextra -pedantic
+
+CFLAGS = $(INCFLAGS) $(WFLAGS) -g3 -ggdb
+LDFLAGS = -lm -ldl
 BINFLAGS = $(libfile) $(LDFLAGS)
 
 ##########################
@@ -61,7 +62,7 @@ $(libfile): $(sources_lib) $(objects_lib) $(headerfiles)
 	ar rcs $(libfile) $(objects_lib)
 
 $(exename): $(libfile) $(sources) $(sources_exe) $(objects_exe)
-	$(CXX) -o $(exename) $(objects_exe) $(BINFLAGS)
+	$(CC) -o $(exename) $(objects_exe) $(BINFLAGS)
 
 clean:
 	@$(RM) $(objects_lib)
@@ -74,5 +75,5 @@ distclean: clean
 rebuild: distclean all
 
 .c.o:
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) -c $(CFLAGS) $< -o $@
 

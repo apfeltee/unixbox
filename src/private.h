@@ -10,7 +10,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#if defined(__unix__) || defined(__linux__) || defined(__CYGWIN__)
+#if defined(__unix__) || defined(__linux__) || defined(__CYGWIN__) || defined(__TINYC__)
     #include <unistd.h>
     #include <fcntl.h>
     #include <sys/utsname.h>

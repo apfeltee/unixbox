@@ -4,7 +4,7 @@
 /*refers to envp*/
 extern char **environ;
 
-void print_env(void)
+static void print_env(void)
 {
     char** envp;
     envp = environ;

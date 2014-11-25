@@ -42,8 +42,6 @@ static void handle_backslashes(const char* instr, size_t len)
 DEFINE_MAIN_PROTO(echo, argc, argv)
 {
     int i;
-    int c;
-    int argind;
     bool omit_nl;
     bool backslashes;
     size_t arglen;
