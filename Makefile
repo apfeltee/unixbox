@@ -3,9 +3,10 @@ libname = unixbox
 exename = unixbox
 libfile = lib$(libname).a
 
-# sources for tinyjs
+script      =  generate.sh
+headerfiles =  src/private.h
+generated   =  src/funcs.h
 sources_exe =  src/main.c
-headerfiles =  $(wildcard src/*.h)
 sources_lib =  $(wildcard src/programs/*.c)
 sources_lib += src/common.c
 sources_lib += src/gopt.c
@@ -56,7 +57,10 @@ BINFLAGS = $(libfile) $(LDFLAGS)
 
 RM = rm -fv
 
-all: $(objects_lib) $(libfile) $(exename) $(headerfiles)
+all: $(generated) $(objects_lib) $(libfile) $(exename) $(headerfiles)
+
+$(generated): $(script) $(sources_lib)
+	bash $(script) > $(generated)
 
 $(libfile): $(sources_lib) $(objects_lib) $(headerfiles)
 	ar rcs $(libfile) $(objects_lib)
@@ -67,6 +71,7 @@ $(exename): $(libfile) $(sources) $(sources_exe) $(objects_exe)
 clean:
 	@$(RM) $(objects_lib)
 	@$(RM) $(objects_exe)
+	@$(RM) $(generated)
 
 distclean: clean
 	@$(RM) $(libfile)

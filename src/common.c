@@ -29,3 +29,50 @@ bool isfile(const char* path)
     }
     return false;
 }
+
+bool ub_opendir(struct Directory* dest, const char* path)
+{
+    if((dest->handle = opendir(path)) != NULL)
+    {
+        return true;
+    }
+    return false;
+}
+
+void ub_rewinddir(struct Directory* dir)
+{
+    rewinddir(dir->handle);
+}
+
+long ub_telldir(struct Directory* dir)
+{
+    return telldir(dir->handle);
+}
+
+void ub_seekdir(struct Directory* dir, long loc)
+{
+    seekdir(dir->handle, loc);
+}
+
+bool ub_readdir(struct Directory* dir, struct DirEntry* entry, bool skipdots)
+{
+    if((entry->entry = readdir(dir->handle)) != NULL)
+    {
+        entry->name = entry->entry->d_name;
+        entry->inode = entry->entry->d_ino;
+        if(skipdots)
+        {
+            if((strcmp(entry->name, ".") == 0) || (strcmp(entry->name, "..") == 0))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+void ub_closedir(struct Directory* dir)
+{
+    closedir(dir->handle);
+}

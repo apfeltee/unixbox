@@ -1,5 +1,6 @@
 
 #include "private.h"
+#include "funcs.h"
 
 bool get_program(struct ProgramPair* dest, const char* progname)
 {

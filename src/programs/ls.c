@@ -88,14 +88,15 @@ DEFINE_MAIN_PROTO(ls, argc, argv)
         if(argv[i][0] == '-')
         {
             slen = strlen(argv[i]);
-            //Skip "-" and move to flag content
-            for(n = 1; n < slen; n++)
+            /* Skip "-" and move to flag content */
+            for(n=1; n< slen; n++)
             {
                 switch(argv[i][n])
                 {
-                    // -a: Show .*
+                    /* -a: Show dotfiles */
                     case 'a':
                         args.show_hidden = 1;
+                        break;
                 }
             } 
         }

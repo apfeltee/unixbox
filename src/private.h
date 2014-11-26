@@ -8,6 +8,7 @@
 #include <ctype.h>
 #include <math.h>
 #include <errno.h>
+#include <setjmp.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #if defined(__unix__) || defined(__linux__) || defined(__CYGWIN__) || defined(__TINYC__)
@@ -60,6 +61,20 @@
 
 typedef int(*ProgramEntry)(int, char**);
 
+struct Directory
+{
+    DIR* handle;
+    const char* dirname;
+};
+
+struct DirEntry
+{
+    struct dirent* entry;
+    const char* name;
+    ino_t inode;
+};
+
+
 struct ProgramPair
 {
     const char* name;
@@ -67,45 +82,12 @@ struct ProgramPair
     ProgramEntry main;
 };
 
-/* define function prototypes ... */
-DEFINE_MAIN(arch);
-DEFINE_MAIN(cat);
-DEFINE_MAIN(cp);
-DEFINE_MAIN(echo);
-DEFINE_MAIN(env);
-DEFINE_MAIN(ls);
-DEFINE_MAIN(mv);
-DEFINE_MAIN(pwd);
-DEFINE_MAIN(rm);
-DEFINE_MAIN(sleep);
-DEFINE_MAIN(sync);
-DEFINE_MAIN(tee);
-DEFINE_MAIN(tty);
-DEFINE_MAIN(unlink);
-DEFINE_MAIN(wc);
-DEFINE_MAIN(whoami);
-
-static const struct ProgramPair all_programs[] =
-{
-    ADD_PROGRAM(echo,   "Prints stuff to the console."),
-    ADD_PROGRAM(cat,    "Concatenates data to standard output."),
-    ADD_PROGRAM(arch,   "arch"),
-    ADD_PROGRAM(cp,     "cp"),
-    ADD_PROGRAM(env,    "env"),
-    ADD_PROGRAM(ls,     "ls"),
-    ADD_PROGRAM(mv,     "mv"),
-    ADD_PROGRAM(pwd,    "pwd"),
-    ADD_PROGRAM(rm,     "rm"),
-    ADD_PROGRAM(sleep,  "sleep"),
-    ADD_PROGRAM(sync,   "sync"),
-    ADD_PROGRAM(tee,    "tee"),
-    ADD_PROGRAM(tty,    "tty"),
-    ADD_PROGRAM(unlink, "unlink"),
-    ADD_PROGRAM(wc,     "wc"),
-    ADD_PROGRAM(whoami, "whoami"),
-    {NULL, NULL, NULL},
-};
-
 /* -- helper functions -- */
 void bail(bool exit_after_print, const char* format_str, ...);
 bool isfile(const char* path);
+bool ub_opendir(struct Directory* dest, const char* path);
+void ub_rewinddir(struct Directory* dir);
+long ub_telldir(struct Directory* dir);
+void ub_seekdir(struct Directory* dir, long loc);
+bool ub_readdir(struct Directory* dir, struct DirEntry* entry, bool skipdots);
+void ub_closedir(struct Directory* dir);
