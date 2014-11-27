@@ -6,20 +6,19 @@ libfile = lib$(libname).a
 script      =  generate.sh
 headerfiles =  src/private.h
 generated   =  src/funcs.h
-sources_exe =  src/main.c
-sources_lib =  $(wildcard src/programs/*.c)
-sources_lib += src/common.c
-sources_lib += src/gopt.c
+sources_exe =  src/main.cpp
+sources_lib =  $(wildcard src/programs/*.cpp)
+sources_lib += src/common.cpp
 
 # names for intermediate files
-objects_lib     = $(sources_lib:.c=.o)
-objects_exe     = $(sources_exe:.c=.o)
+objects_lib     = $(sources_lib:.cpp=.o)
+objects_exe     = $(sources_exe:.cpp=.o)
 
 #############################################
 ### warning: edit below at your own risk! ###
 #############################################
 
-CC = clang
+CC = clang++ -std=c++11
 
 # flags for header file paths
 INCFLAGS = -Isrc
@@ -79,6 +78,6 @@ distclean: clean
 
 rebuild: distclean all
 
-.c.o:
+.cpp.o:
 	$(CC) -c $(CFLAGS) $< -o $@
 

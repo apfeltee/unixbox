@@ -22,10 +22,18 @@ bool isfile(const char* path)
     struct stat st;
     if(stat(path, &st) == 0)
     {
-        if(st.st_mode & S_IFDIR)
-        {
-            return true;
-        }
+        return S_ISREG(st.st_mode);
+    }
+    return false;
+}
+
+
+bool isdirectory(const char* path)
+{
+    struct stat st;
+    if(stat(path, &st) == 0)
+    {
+        return S_ISDIR(st.st_mode);
     }
     return false;
 }
@@ -60,6 +68,7 @@ bool ub_readdir(struct Directory* dir, struct DirEntry* entry, bool skipdots)
     {
         entry->name = entry->entry->d_name;
         entry->inode = entry->entry->d_ino;
+        entry->type = entry->entry->d_type;
         if(skipdots)
         {
             if((strcmp(entry->name, ".") == 0) || (strcmp(entry->name, "..") == 0))
@@ -76,3 +85,4 @@ void ub_closedir(struct Directory* dir)
 {
     closedir(dir->handle);
 }
+

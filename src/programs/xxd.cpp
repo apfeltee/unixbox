@@ -56,7 +56,7 @@ static int hexdump(FILE* out, FILE* fh, const char* filename)
     return 0;
 }
 
-DEFINE_MAIN_PROTO(hd, argc, argv)
+DEFINE_MAIN_PROTO(xxd, argc, argv)
 {
     int i;
     int rc;

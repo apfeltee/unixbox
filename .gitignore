@@ -6,6 +6,7 @@ unixbox.dll
 libunixbox.a
 libunixbox.so
 
+funcs.h
 
 # extra stuff from https://www.gitignore.io
 ### C++ ###

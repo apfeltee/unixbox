@@ -1,11 +1,10 @@
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <limits.h>
-#include <ctype.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cstdint>
+#include <climits>
+#include <cctype>
 #include <math.h>
 #include <errno.h>
 #include <setjmp.h>
@@ -45,19 +44,8 @@
     #include </platform_not_supported/>
 #endif
 
-
 #define DEFINE_MAIN_PROTO(name, argcname, argvname) \
-    int impl_##name##_main(int argcname, char** argvname)
-
-#define DEFINE_MAIN(name) \
-    DEFINE_MAIN_PROTO(name, argc_, argv_)
-
-#define ADD_PROGRAM(name, description) \
-    { \
-        #name, \
-        description, \
-        impl_##name##_main, \
-    } \
+    extern "C" int impl_##name##_main(int argcname, char** argvname)
 
 typedef int(*ProgramEntry)(int, char**);
 
@@ -72,6 +60,7 @@ struct DirEntry
     struct dirent* entry;
     const char* name;
     ino_t inode;
+    unsigned char type;
 };
 
 
@@ -82,9 +71,36 @@ struct ProgramPair
     ProgramEntry main;
 };
 
-/* -- helper functions -- */
+/**
+* ----------------------
+* -- helper functions --
+* ----------------------
+*/
+
+/* uses perror() with vsnprintf'd format string. Internal buffer is hardcoded to 1024. */
 void bail(bool exit_after_print, const char* format_str, ...);
+
+/* uses stat to determine whether $path is a file. */
 bool isfile(const char* path);
+
+/* uses stat to determine whether $path is a directory. */
+bool isdirectory(const char* path);
+
+bool parse_flag(const char* str, const char* name, const char* dest);
+
+/*
+the following functions wrap dirent.h (in case some OSs implement some funky things ...)
+
+DT_REG A     regular file.
+DT_DIR A     directory.
+DT_FIFO A    named pipe, or FIFO. See FIFO Special Files.
+DT_SOCK A    local-domain socket.
+DT_CHR A     character device.
+DT_BLK A     block device.
+DT_LNK A     symbolic link.
+DT_UNKNOWN   The type is unknown. Only some filesystems have full support
+             to return the type of the file, others might always return this value.
+*/
 bool ub_opendir(struct Directory* dest, const char* path);
 void ub_rewinddir(struct Directory* dir);
 long ub_telldir(struct Directory* dir);
