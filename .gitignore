@@ -1,12 +1,11 @@
 unixbox
 unixbox.exe
-
 unixbox.lib
 unixbox.dll
 libunixbox.a
 libunixbox.so
-
 funcs.h
+*.stackdump
 
 # extra stuff from https://www.gitignore.io
 ### C++ ###
